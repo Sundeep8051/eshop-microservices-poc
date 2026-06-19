@@ -1,5 +1,4 @@
-﻿using Catalog.API.Dtos;
-
+﻿
 namespace Catalog.API.Products.CreateProduct
 {
     public record CreateProductRequest(string name, List<string> category, string description, string imagefile, decimal price);
