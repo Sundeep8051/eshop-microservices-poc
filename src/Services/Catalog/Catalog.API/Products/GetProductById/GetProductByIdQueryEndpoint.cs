@@ -1,22 +1,21 @@
 ﻿using Catalog.API.Exceptions;
-using Catalog.API.Products.GetProducts;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Catalog.API.Products.GetProductById
 {
-    //public record GetProductByIdRequest(Guid Id);
+    public record GetProductByIdRequest(Guid Id);
     public record GetProductByIdResponse(Product product);
     public class GetProductByIdQueryEndpoint : ICarterModule
     {
         public async void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapGet("/products/{id}", async (Guid Id, ISender sender) => 
+            app.MapGet("/products/{id}", async ([AsParameters] GetProductByIdRequest request, ISender sender) => 
             {
-                var result = await sender.Send(new GetProductByIdQuery(Id));
+                var query = request.Adapt<GetProductByIdQuery>();
+                var result = await sender.Send(query);
                 if (result.Product is null)
                 {
                     //return Results.NotFound($"Product with Id: {Id} not found");
-                    throw new NotFoundException("Product", Id);
+                    throw new NotFoundException("Product", request.Id);
                 }
                 var response = result.Adapt<GetProductByIdResponse>();
                 return Results.Ok(response);

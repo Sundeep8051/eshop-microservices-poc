@@ -1,8 +1,6 @@
-﻿using Catalog.API.Products.CreateProduct;
-
-namespace Catalog.API.Products.GetProducts
+﻿namespace Catalog.API.Products.GetProducts
 {
-    //public record GetProductsRequest();
+    public record GetProductsRequest();
     public record GetProductsResponse(IEnumerable<Product> Products);
     public class GetProductsQueryEndpoint : ICarterModule
     {
@@ -10,8 +8,8 @@ namespace Catalog.API.Products.GetProducts
         {
             app.MapGet("/products", async (ISender sender) => 
             {
-
-                var result = await sender.Send(new GetProductQuery());
+                var query = new GetProductsRequest().Adapt<GetProductQuery>();
+                var result = await sender.Send(query);
                 var response = result.Adapt<GetProductsResponse>();
                 return Results.Ok(response);
             })
